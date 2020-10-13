@@ -10,7 +10,7 @@ https://www.postgresqltutorial.com/install-postgresql-linux/
 sudo -i -u postgres
 psql
 CREATE DATABASE content_server_development;
-ALTER ROLE postgres WITH PASSWORD 'grinddog';
+ALTER ROLE postgres WITH PASSWORD 'password';
 \q
 sudo systemctl restart postgresql
 
