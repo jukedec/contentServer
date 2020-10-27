@@ -1,35 +1,63 @@
-# Welcome to Buffalo!
+# contentServer
 
-Thank you for choosing Buffalo for your web development needs.
+sudo apt-get install postgresq
 
-## Database Setup
+https://ubuntu.com/tutorials/install-and-configure-nginx#2-installing-nginx
+sudo apt install nginx
 
-It looks like you chose to set up your application using a database! Fantastic!
 
-The first thing you need to do is open up the "database.yml" file and edit it to use the correct usernames, passwords, hosts, etc... that are appropriate for your environment.
+https://www.postgresqltutorial.com/install-postgresql-linux/
+sudo -i -u postgres
+psql
+CREATE DATABASE content_server_development;
+ALTER ROLE postgres WITH PASSWORD 'password';
+\q
+sudo systemctl restart postgresql
 
-You will also need to make sure that **you** start/install the database of your choice. Buffalo **won't** install and start it for you.
+sudo nano /etc/nginx/sites-available/jukedec
 
-### Create Your Databases
+upstream buffalo_app {
+    server 127.0.0.1:3000;
+}
 
-Ok, so you've edited the "database.yml" file and started your database, now Buffalo can create the databases in that file for you:
+server {
+    listen 80;
+    server_name jukedec.com;
 
-	$ buffalo pop create -a
+    # Hide NGINX version (security best practice)
+    server_tokens off;
 
-## Starting the Application
+    location / {
+        proxy_redirect   off;
+        proxy_set_header Host              $http_host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
 
-Buffalo ships with a command that will watch your application and automatically rebuild the Go binary and any assets for you. To do that run the "buffalo dev" command:
+        proxy_pass       http://buffalo_app;
+    }
+}
 
-	$ buffalo dev
+sudo service nginx restart
 
-If you point your browser to [http://127.0.0.1:3000](http://127.0.0.1:3000) you should see a "Welcome to Buffalo!" page.
+sudo apt-get install golang
 
-**Congratulations!** You now have your Buffalo application up and running.
+https://www.gopherguides.com/courses/preparing-your-environment-for-go-development/modules/setting-up-mac-linux/#slide-10
 
-## What Next?
+https://gofi.sh/#install
+gofish init
+gofish install buffalo
 
-We recommend you heading over to [http://gobuffalo.io](http://gobuffalo.io) and reviewing all of the great documentation there.
+mkdir ~/go/src/github.com/
+mkdir ~/go/src/github.com/jukedec
 
-Good luck!
+sudo apt install nodejs
+sudo apt install npm
 
-[Powered by Buffalo](http://gobuffalo.io)
+buffalo new contentServer
+
+nano database.yaml
+
+buffalo build
+
+./bin/contentServer
