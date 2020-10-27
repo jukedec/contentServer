@@ -1,0 +1,27 @@
+<header>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1 col-sm-2 col-xs-2 logo">
+        <h1>
+         UPLOAD to Jukedec
+        </h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="subtitle">
+      <div class="container">      
+         <form action="/uploadPost" method="POST" enctype="multipart/form-data">
+          <label for="files">Select files:</label>
+          <input type="file" id="files" name="files" multiple><br><br>
+           <input type="test" id="bandname" name="bandname" placeholder="bandname" multiple>
+          <input type="submit">
+          <input name="authenticity_token" type="hidden" value="<%= authenticity_token %>">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
