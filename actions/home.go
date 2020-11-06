@@ -12,8 +12,10 @@ import (
 "path/filepath"
 //   "reflect"
   "os/exec"
-//   "math/rand"
-//   "strconv"
+  "log"
+  "math/rand"
+  "strconv"
+  "strings"
 //   "strings"
 //   "io/ioutil"
 )
@@ -82,8 +84,8 @@ func UploadPost(c buffalo.Context) error {
 		files := m.File["files"]
   dir := ""
   req_id := ""
-//   req_id = strconv.Itoa(rand.Intn(9999999))
-  req_id = c.Param("bandname")
+  req_id = strconv.Itoa(rand.Intn(9999999))
+//   req_id = c.Param("bandname")
   fmt.Println("GOT NAME?")
   
   fmt.Println(req_id)
@@ -135,10 +137,11 @@ func UploadPost(c buffalo.Context) error {
   
   commandDir := "/home/jukedec/go/src/github.com/jukedec/Hugo-Mp3-Preprocessor/bash.sh"
   mp3Dir := "/home/jukedec/go/src/github.com/jukedec/content_server/uploads/" + req_id
-  siteDir := " /var/www/html/sites/" + req_id
+  siteDir := "/home/jukedec/go/myTemp/" + req_id
+  serveDir := "/var/www/html/sites"
   command := commandDir
   
-  args := []string{mp3Dir, siteDir}
+  args := []string{mp3Dir, siteDir, serveDir, req_id}
 //   args := mp3Dir + " " + siteDir
   fmt.Println(command)
   fmt.Println(args)
@@ -146,10 +149,23 @@ func UploadPost(c buffalo.Context) error {
 //   outstuff, probablyError := exec.Command(command, args).Output()
 // 	fmt.Printf("maybe an error: %v", probablyError)
   
-  cmd := exec.Command(command, args...)
+//     out, commandError := exec.Command("date").Output()
+//     if commandError != nil {
+//         log.Fatal(commandError)
+//     }
+    
+  
+  
+  cmd, commandError := exec.Command(command, args...).Output()
+      if commandError != nil {
+        log.Fatal(commandError)
+    }
+    
 	fmt.Printf("Running command and waiting for it to finish...")
-	processErr := cmd.Run()
-	fmt.Printf("Command finished with error: %v", processErr)
+// 	processErr := cmd.Run()
+// 	fmt.Printf("Command finished with error: %v", processErr)
+  
+  fmt.Printf("The OUTPUT: %s\n", cmd)
   
 //   out, err := exec.Command("date").Output()
   
@@ -165,10 +181,14 @@ func UploadPost(c buffalo.Context) error {
 //       url = line[14:len(line)]
 //     }
   
-  
+  n:= string(cmd)
+  res1 := strings.Index(n, "theArtistName=")
+  fmt.Println("Result 1: ", res1) 
+  inputFmt:= n[res1+15:len(n)-1]
+  fmt.Println("Result 2: ", inputFmt)
   
   baseUrl := "http://play.jukedec.com/"
-  url := req_id
+  url := inputFmt
 //   cmd, e := exec.Run(command, nil, nil, exec.DevNull, exec.Pipe, exec.MergeWithStdout); e == nil {
 
 //   }
