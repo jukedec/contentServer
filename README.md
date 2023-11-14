@@ -42,7 +42,7 @@ sudo service nginx restart
 
 sudo apt-get install golang
 
-https://www.gopherguides.com/courses/preparing-your-environment-for-go-development/modules/setting-up-mac-linux/#slide-10
+https://learn.gopherguides.com/courses/preparing-your-environment-for-go-development/modules/setting-up-mac-linux/#slide-10
 
 https://gofi.sh/#install
 gofish init
